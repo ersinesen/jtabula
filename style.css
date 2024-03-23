@@ -1,0 +1,58 @@
+/* default cell for input box */
+.jt-cell {
+  width: 100px;
+  height: 40px;
+  border: 1px solid #aaa !important;
+}
+
+/* Reset styles for the select element */
+.jt-select {
+  margin: 0;
+  padding: 0;
+  background: none;
+  font-size: small;
+  color: inherit;
+  font-family: inherit;
+  box-sizing: border-box;
+  /* Include border in the box model */
+  border: 1px solid #aaa !important;
+  /* Add border if needed */
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 200px;
+  min-width: 100px;
+}
+
+/* Style for the table*/
+.table {
+  border-collapse: collapse;
+}
+
+/* Add other styles for your th elements */
+.table thead th {
+  background: #ddd;
+  white-space: normal;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table thead tr {
+  border: 0px solid #000;
+  border-bottom: 1px solid #000 !important;
+}
+
+.table thead td {
+  padding: 1px;
+  text-align: left;
+}
+
+.table td {
+  padding: 1px;
+  text-align: left;
+}
+
+.table tr {
+  padding: 1px;
+}
