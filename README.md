@@ -30,7 +30,7 @@ In header
 
 In body
 ```
-<div id=jtabula-container></div>
+<div id="jtabula-container"></div>
 
 <script src="jtabula.js"></script>
 <script>
