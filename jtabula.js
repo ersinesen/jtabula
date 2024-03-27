@@ -97,6 +97,11 @@ class JTabula {
   populateCell(cell, cellData) {
     cell.type = cellData.type;
     switch (cellData.type) {
+      case "html":
+        const htmlDiv = document.createElement("div");
+        htmlDiv.innerHTML = cellData.data;
+        cell.appendChild(htmlDiv);
+        break;
       case "text":
         cell.textContent = cellData.data;
         break;
@@ -124,11 +129,24 @@ class JTabula {
         });
         cell.appendChild(select);
         break;
-      case "img":
-        const img = document.createElement("img");
+      case "radio":
+        this.createRadios(cell, cellData);
+        break;
+      case "checkbox":
+        this.createCheckbox(cell, cellData);
+        break;
+      case "img": const img = document.createElement("img");
         img.src = cellData.data;
         img.alt = "Image";
         cell.appendChild(img);
+        break;
+      case "video":
+        const video = document.createElement("video");
+        video.classList.add("jt-video");
+        video.src = cellData.data;
+        video.controls = true;
+        video.type = "video/mp4"
+        cell.appendChild(video);
         break;
       case "chart":
         const chartDiv = document.createElement("div");
@@ -194,7 +212,7 @@ class JTabula {
           type: 'bar',
         },
         series: [{
-          data: [18, 28, 47, 57, 77]
+          data: [18, 28, 47, 57, 77, 87, 97, 107, 117, 127, 137, 10, 17, 27, 77, 87, 127]
         }],
         yaxis: {
           opposite: true,
@@ -203,4 +221,86 @@ class JTabula {
       myChart.render();
     }
   }
+
+  createRadios(cell, cellData) {
+    cell.style.textAlign = "left";
+    const radioGroup = document.createElement("div");
+    const name = cell.id.replace("cell", "radio");
+    cellData.data.forEach(option => {
+      const label = document.createElement("label");
+      label.classList.add("form-check");
+      const input = document.createElement("input");
+      input.classList.add("form-check-input");
+      input.type = "radio";
+      input.name = name;
+      const span = document.createElement("span");
+      span.classList.add("form-check-label");
+      span.textContent = option;
+      label.appendChild(input);
+      label.appendChild(span);
+      radioGroup.appendChild(label);
+      cell.appendChild(radioGroup);
+    });
+  }
+
+  createCheckbox(cell, cellData) {
+    cell.style.textAlign = "left";
+    const checkGroup = document.createElement("div");
+    const name = cell.id.replace("cell", "check");
+    cellData.data.forEach(option => {
+      const label = document.createElement("label");
+      label.classList.add("form-check");
+      const input = document.createElement("input");
+      input.classList.add("form-check-input");
+      input.type = "checkbox";
+      input.name = name;
+      const span = document.createElement("span");
+      span.classList.add("form-check-label");
+      span.textContent = option;
+      label.appendChild(input);
+      label.appendChild(span);
+      checkGroup.appendChild(label);
+      cell.appendChild(checkGroup);
+    });
+  }
+
+  createWeatherChart() {
+    // Define WebSocket endpoint for weather data
+    const weatherWebSocketEndpoint = 'wss://example.com/weather';
+
+    // Create WebSocket connection
+    const socket = new WebSocket(weatherWebSocketEndpoint);
+
+    // Array to store weather data
+    let weatherDataArray = [];
+
+    // Event listener for WebSocket connection established
+    socket.addEventListener('open', function (event) {
+        console.log('Connected to weather data WebSocket');
+    });
+
+    // Event listener for incoming messages
+    socket.addEventListener('message', function (event) {
+        // Parse incoming JSON data
+        const newData = JSON.parse(event.data);
+
+        // Add new weather data to array
+        weatherDataArray.push(newData);
+
+        // Log the latest weather data
+        console.log('New weather data:', newData);
+    });
+
+    // Event listener for WebSocket connection closed
+    socket.addEventListener('close', function (event) {
+        console.log('Disconnected from weather data WebSocket');
+    });
+
+    // Event listener for WebSocket errors
+    socket.addEventListener('error', function (event) {
+        console.error('WebSocket error:', event);
+    });
+
+  }
+  
 }

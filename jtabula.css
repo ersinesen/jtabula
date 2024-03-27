@@ -42,3 +42,10 @@
   max-height: var(--cell-width);
   min-height: 100px;
 }
+
+/* video */
+.jt-video {
+  /* override other styles to make responsive */
+  width: 100% !important;
+  height: auto !important;
+}
