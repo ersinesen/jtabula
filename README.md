@@ -42,18 +42,17 @@ In body
       const cellDataList = [
         {type: "chart"},
         {type: "youtube", data: "https://www.youtube.com/embed/R2DU85qLfJQ"},
-        {type: "text", data: "Text Cell 1"},
-        {type: "text", data: "Cell 2"},
-        {type: "text", data: "Text Cell 3"},
-        {type: "input", data: "Input Cell", disabled: true},
-        {type: "text", data: "Cell 4"},
+        {type: "video", data: "gonul5.mp4"},
         {type: "img", data: "https://via.placeholder.com/120"},
         {type: "img", data: "https://via.placeholder.com/150"},
         {type: "img", data: "https://via.placeholder.com/180"},
-        {type: "select", data: ["Option 11", "Option 21", "Option 31"], disabled: true, hAlign: "right"},
-        {type: "img", data: "https://via.placeholder.com/190"},
-        {type: "select", data: ["Option 1", "Option 2", "Option 3"], hAlign: "right"},
+        {type: "text", data: "Text Cell 1"},
+        {type: "radio", data: ["Option 1", "Option 2", "Option 3"]},
+        {type: "checkbox", data: ["Option 1", "Option 2", "Option 3"]},
+        {type: "input", data: "Input Cell", disabled: true},
         {type: "input", data: "Input"},
+        {type: "select", data: ["Option 1", "Option 2", "Option 3"], hAlign: "right"},
+        {type: "html", data: '<a href="#" class="btn btn-ghost-primary active w-100">Button</a>'},
       ];
 
       table.setCellDimensions("240px", "180px");
