@@ -46,6 +46,72 @@ class JTabula {
   }
 
   /**
+   * Appends a header row to the table.
+   * @param {Array<string>} headers - Array of header text for each column.
+   */
+  appendHeader(headers) {
+    const table = document.getElementById(this.tableID);
+    const thead = table.createTHead();
+    const headerRow = thead.insertRow();
+    //headerRow.classList.add("sticky-top");
+    headers.forEach((headerText, index) => {
+      const headerCell = document.createElement("th");
+      headerCell.classList.add("jt-header-cell");
+      headerCell.textContent = headerText;
+
+      if (index > 0) {
+        // Create buttons for increasing and decreasing column width
+        const increaseButton = document.createElement("button");
+        increaseButton.classList.add("jt-header-button", "btn-icon");
+        increaseButton.textContent = '+';
+        increaseButton.addEventListener("click", () => {
+          this.adjustColumnWidth(headerCell.cellIndex, 10);
+        });
+
+        const decreaseButton = document.createElement("button");
+        decreaseButton.textContent = '-';
+        decreaseButton.addEventListener("click", () => {
+          this.adjustColumnWidth(headerCell.cellIndex, -10);
+        });
+
+        // Container for buttons with right alignment
+        const buttonContainer = document.createElement("div");
+        buttonContainer.style.float = "right"; // Float the container to the right
+        buttonContainer.appendChild(decreaseButton);
+        buttonContainer.appendChild(increaseButton);
+        headerCell.appendChild(buttonContainer);
+      }
+      headerRow.appendChild(headerCell);
+    });
+
+  }
+
+  adjustColumnWidth(columnIndex, delta) {
+    const table = document.getElementById(this.tableID);
+    const rows = table.rows;
+    const cellsPerRow = this.columnsPerRow;
+
+    // Adjust width of header cell
+    const headerCell = table.rows[0].cells[columnIndex];
+    const currentHeaderWidth = parseInt(headerCell.style.width) || headerCell.offsetWidth;
+    const newHeaderWidth = Math.max(currentHeaderWidth + delta, 0);
+    headerCell.style.width = newHeaderWidth + "px";
+
+    // Adjust width of cells in the same column in the body of the table
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const cellIndex = columnIndex + (i - 1) * cellsPerRow; // Calculate cell index based on column index and row number
+      const cell = row.cells[cellIndex];
+      if (cell) {
+        const currentCellWidth = parseInt(cell.style.width) || cell.offsetWidth;
+        const newCellWidth = Math.max(currentCellWidth + delta, 0);
+        cell.style.width = newCellWidth + "px";
+      }
+    }
+  }
+
+
+  /**
    * Sets custom dimensions for the cells.
    * @param {string} width - The width of the cells.
    * @param {string} height - The height of the cells.
@@ -84,6 +150,7 @@ class JTabula {
 
     // fill in data
     this.populateCell(newCell, cell);
+
   }
 
   /**
@@ -112,6 +179,16 @@ class JTabula {
         input.value = cellData.data;
         input.disabled = cellData.disabled || false;
         cell.appendChild(input);
+        break;
+      case "input-ss":
+        const input_ss = document.createElement("input");
+        input_ss.classList.add("jt-input-ss");
+        input_ss.type = "text";
+        input_ss.value = cellData.data;
+        input_ss.disabled = cellData.disabled || false;
+        // Add event listeners for keystrokes
+        this.addKeystrokeHandlers(input_ss);
+        cell.appendChild(input_ss);
         break;
       case "select":
         const select = document.createElement("select");
@@ -171,6 +248,49 @@ class JTabula {
       default:
         cell.textContent = "Invalid cell type";
     }
+  }
+
+  addKeystrokeHandlers(inputElement) {
+    inputElement.addEventListener('keydown', (event) => {
+      const key = event.key;
+      const currentCell = event.target.parentNode;
+      const currentRow = currentCell.parentNode;
+      const currentRowIndex = currentRow.rowIndex;
+      const currentCellIndex = currentCell.cellIndex;
+
+      switch (key) {
+        case 'ArrowLeft':
+          event.preventDefault();
+          if (currentCellIndex > 1) {
+            currentRow.cells[currentCellIndex - 1].querySelector('input').focus();
+          }
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          if (currentCellIndex < currentRow.cells.length - 1) {
+            currentRow.cells[currentCellIndex + 1].querySelector('input').focus();
+          }
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          if (currentRowIndex > 1) {
+            const previousRow = currentRow.previousElementSibling;
+            if (previousRow) {
+              previousRow.cells[currentCellIndex].querySelector('input').focus();
+            }
+          }
+          break;
+        case 'ArrowDown':
+          event.preventDefault();
+          if (currentRowIndex < currentRow.parentNode.rows.length - 1) {
+            const nextRow = currentRow.nextElementSibling;
+            nextRow.cells[currentCellIndex].querySelector('input').focus();
+          }
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   /**
@@ -275,32 +395,32 @@ class JTabula {
     let weatherDataArray = [];
 
     // Event listener for WebSocket connection established
-    socket.addEventListener('open', function (event) {
-        console.log('Connected to weather data WebSocket');
+    socket.addEventListener('open', function(event) {
+      console.log('Connected to weather data WebSocket');
     });
 
     // Event listener for incoming messages
-    socket.addEventListener('message', function (event) {
-        // Parse incoming JSON data
-        const newData = JSON.parse(event.data);
+    socket.addEventListener('message', function(event) {
+      // Parse incoming JSON data
+      const newData = JSON.parse(event.data);
 
-        // Add new weather data to array
-        weatherDataArray.push(newData);
+      // Add new weather data to array
+      weatherDataArray.push(newData);
 
-        // Log the latest weather data
-        console.log('New weather data:', newData);
+      // Log the latest weather data
+      console.log('New weather data:', newData);
     });
 
     // Event listener for WebSocket connection closed
-    socket.addEventListener('close', function (event) {
-        console.log('Disconnected from weather data WebSocket');
+    socket.addEventListener('close', function(event) {
+      console.log('Disconnected from weather data WebSocket');
     });
 
     // Event listener for WebSocket errors
-    socket.addEventListener('error', function (event) {
-        console.error('WebSocket error:', event);
+    socket.addEventListener('error', function(event) {
+      console.error('WebSocket error:', event);
     });
 
   }
-  
+
 }

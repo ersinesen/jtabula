@@ -6,7 +6,7 @@
 
 /* Style for cell */
 .jt-cell {
-  border: 1px solid #aaa !important;
+  border: 1px solid #666 !important;
   width: var(--cell-width) !important;
   height: var(--cell-height) !important;
   overflow: hidden !important;
@@ -39,7 +39,7 @@
 .jt-iframe {
   max-width: var(--cell-width);
   min-width: 100px;
-  max-height: var(--cell-width);
+  max-height: var(--cell-height);
   min-height: 100px;
 }
 
@@ -48,4 +48,21 @@
   /* override other styles to make responsive */
   width: 100% !important;
   height: auto !important;
+}
+
+/* thead */
+.jt-header-cell {
+  background: #ddd;
+  border: 1px solid #666 !important;
+  overflow: hidden !important;
+}
+
+/* header button */
+.jt-header-button {
+  width: 20px !important;
+}
+
+/* Input box */
+.jt-input-ss {
+  border: 0px !important;
 }

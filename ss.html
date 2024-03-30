@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>jtabula spreadsheed</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+
+  <style>
+    @import url("https://rsms.me/inter/inter.css");
+
+    :root {
+      --tblr-font-sans-serif: "Inter Var", -apple-system, BlinkMacSystemFont,
+        San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+    }
+
+    body {
+      font-feature-settings: "cv03", "cv04", "cv11";
+    }
+  </style>
+  <link href="jtabula.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+  <div class="row row-cards">
+    <div id="jtabula-container"></div>
+  </div>
+
+
+  <script src="jtabula.js"></script>
+  <script>
+    function getColumnNames(numCols) {
+      const columnNames = [];
+
+      // Function to convert a number to corresponding Excel-style column name
+      function getColumnName(num) {
+        let columnName = '';
+        while (num > 0) {
+          let remainder = (num - 1) % 26;
+          columnName = String.fromCharCode(65 + remainder) + columnName;
+          num = Math.floor((num - remainder) / 26);
+        }
+        return columnName;
+      }
+
+      // Generate column names
+      columnNames.push("No");
+      for (let i = 1; i <= numCols; i++) {
+        columnNames.push(getColumnName(i));
+      }
+
+      return columnNames;
+    }
+    // Create table
+    document.addEventListener("DOMContentLoaded", function () {
+      const containerId = "jtabula-container";
+      const numCols = 30;
+      const colNames = getColumnNames(numCols);
+      const table = new JTabula(containerId, numCols + 1);
+      table.createTable();
+      table.appendHeader(colNames);
+
+      const numRows = 100;
+      let cellDataList = [];
+      for (let i = 1; i <= numRows; i++) {
+        let row = [];
+        row.push({type: "text", data: `${i}`})
+        for (let j = 0; j < numCols; j++) {
+          row.push({type: "input-ss", data: ""});
+        }
+        cellDataList.push(...row);
+      }
+
+      table.setCellDimensions("60px", "20px");
+      cellDataList.forEach(cell => {
+        table.appendCell(cell);
+      });
+
+    });
+  </script>
+</body>
+
+</html>

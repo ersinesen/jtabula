@@ -29,13 +29,24 @@
 
 <body>
   <div class="container-xl">
-    <h1>JTabula</h1>
+    <h1>JTabula Example</h1>
 
     <div class="row row-cards">
       <div id="jtabula-container"></div>
     </div>
+
   </div>
 
+  <br />
+
+  <div class="container-xl">
+    <div class="row row-cards">
+      <h1>Other Examples</h1>
+      <ul>
+        <li><a href="ss.html">Spread Sheet Example</a></li>
+      </ul>
+    </div>
+  </div>
 
   <script src="jtabula.js"></script>
   <script>
@@ -44,6 +55,9 @@
       const containerId = "jtabula-container";
       const table = new JTabula(containerId, 3);
       table.createTable();
+
+      table.appendHeader(["Header 1", "Header 2", "Header 3"]);
+
       const cellDataList = [
         {type: "chart"},
         {type: "youtube", data: "https://www.youtube.com/embed/R2DU85qLfJQ"},
@@ -64,7 +78,7 @@
       cellDataList.forEach(cell => {
         table.appendCell(cell);
       });
-      console.log(table.getCellValue(1, 0));
+
     });
   </script>
 </body>
