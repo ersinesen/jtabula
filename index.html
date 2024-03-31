@@ -44,43 +44,48 @@
       <h1>Other Examples</h1>
       <ul>
         <li><a href="ss.html">Spread Sheet Example</a></li>
+        <li><a href="cd.html"">Chart Dashboard Example</a></li>
       </ul>
     </div>
   </div>
 
-  <script src="jtabula.js"></script>
-  <script>
-    // Create table
-    document.addEventListener("DOMContentLoaded", function () {
-      const containerId = "jtabula-container";
-      const table = new JTabula(containerId, 3);
-      table.createTable();
+  <script src=" jtabula.js"></script>
+            <script>
+              // Create table
+              document.addEventListener("DOMContentLoaded", function () {
+                const containerId = "jtabula-container";
+                const table = new JTabula(containerId, 3);
+                table.createTable();
 
-      table.appendHeader(["Header 1", "Header 2", "Header 3"]);
+                table.appendHeader(["Header 1", "Header 2", "Header 3"]);
 
-      const cellDataList = [
-        {type: "chart"},
-        {type: "youtube", data: "https://www.youtube.com/embed/R2DU85qLfJQ"},
-        {type: "video", data: "gonul5.mp4"},
-        {type: "img", data: "https://via.placeholder.com/120"},
-        {type: "img", data: "https://via.placeholder.com/150"},
-        {type: "img", data: "https://via.placeholder.com/180"},
-        {type: "text", data: "Text Cell 1"},
-        {type: "radio", data: ["Option 1", "Option 2", "Option 3"]},
-        {type: "checkbox", data: ["Option 1", "Option 2", "Option 3"]},
-        {type: "input", data: "Input Cell", disabled: true},
-        {type: "input", data: "Input"},
-        {type: "select", data: ["Option 1", "Option 2", "Option 3"], hAlign: "right"},
-        {type: "html", data: '<a href="#" class="btn btn-ghost-primary active w-100">Button</a>'},
-      ];
+                const cellDataList = [
+                  {
+                    type: "chart", chartType: "bar", chartTitle: "Sample Chart", series: [{
+                      data: [18, 28, 47, 57, 77, 87, 97, 107, 117, 127, 137, 10, 17, 27, 77, 87, 127]
+                    }]
+                  },
+                  {type: "youtube", data: "https://www.youtube.com/embed/R2DU85qLfJQ"},
+                  {type: "video", data: "gonul5.mp4"},
+                  {type: "img", data: "https://via.placeholder.com/120"},
+                  {type: "img", data: "https://via.placeholder.com/150"},
+                  {type: "img", data: "https://via.placeholder.com/180"},
+                  {type: "text", data: "Text Cell 1"},
+                  {type: "radio", data: ["Option 1", "Option 2", "Option 3"]},
+                  {type: "checkbox", data: ["Option 1", "Option 2", "Option 3"]},
+                  {type: "input", data: "Input Cell", disabled: true},
+                  {type: "input", data: "Input"},
+                  {type: "select", data: ["Option 1", "Option 2", "Option 3"], hAlign: "right"},
+                  {type: "html", data: '<a href="#" class="btn btn-ghost-primary active w-100">Button</a>'},
+                ];
 
-      table.setCellDimensions("240px", "180px");
-      cellDataList.forEach(cell => {
-        table.appendCell(cell);
-      });
+                table.setCellDimensions("240px", "180px");
+                cellDataList.forEach(cell => {
+                  table.appendCell(cell);
+                });
 
-    });
-  </script>
+              });
+            </script>
 </body>
 
 </html>

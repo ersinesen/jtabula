@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>jtabula chart dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+
+  <style>
+    @import url("https://rsms.me/inter/inter.css");
+
+    :root {
+      --tblr-font-sans-serif: "Inter Var", -apple-system, BlinkMacSystemFont,
+        San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+    }
+
+    body {
+      font-feature-settings: "cv03", "cv04", "cv11";
+    }
+  </style>
+  <link href="jtabula.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+  <div class="row row-cards">
+    <div id="jtabula-container"></div>
+  </div>
+
+
+  <script src="jtabula.js"></script>
+  <script>
+    // Create an object to store chart data
+    let chartDataDict = {};
+
+    function getRandomIntegers(N) {
+      const randomIntegers = [];
+      for (let i = 0; i < N; i++) {
+        const randomInteger = Math.floor(Math.random() * 101); // Generates a random integer between 0 and 100
+        randomIntegers.push(randomInteger);
+      }
+      return randomIntegers;
+    }
+
+    // Define a function to update the data of each chart
+    function updateCharts() {
+      const container = document.getElementById("jtabula-container");
+      const cells = container.querySelectorAll(".jt-cell");
+
+      cells.forEach(cell => {
+        const chartId = `chart-${cell.id}`;
+        const data = chartDataDict[chartId]; // Retrieve the data array directly from the dictionary
+        data.shift(); // Remove the first element of the array
+        const newData = getRandomIntegers(1)[0]; // Generate a new random sample
+        data.push(newData); // Append the new random sample to the array
+        ApexCharts.exec(chartId, 'updateSeries', [{data: data}], true);
+      });
+    }
+
+
+    // Create table
+    document.addEventListener("DOMContentLoaded", function () {
+      const containerId = "jtabula-container";
+      const numCols = 4;
+      const table = new JTabula(containerId, numCols);
+      table.createTable();
+
+      const numRows = 3;
+      let cellDataList = [];
+      const N = 10; // Change N to the desired number of random integers
+
+      for (let i = 0; i < numRows; i++) {
+        let row = [];
+        for (let j = 0; j < numCols; j++) {
+          const randomNumbers = getRandomIntegers(N);
+          row.push({
+            type: "chart",
+            chartType: "line",
+            series: [{
+              data: randomNumbers
+            }]
+          });
+          // store data
+          const chartId = `chart-cell-${i}-${j}`;
+          chartDataDict[chartId] = randomNumbers;
+        }
+        cellDataList.push(...row);
+      }
+
+      table.setCellDimensions("180", "120px");
+      cellDataList.forEach(cell => {
+        table.appendCell(cell);
+      });
+
+      // Update charts every second
+      setInterval(updateCharts, 1000);
+    });
+  </script>
+</body>
+
+</html>

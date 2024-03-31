@@ -227,9 +227,9 @@ class JTabula {
         break;
       case "chart":
         const chartDiv = document.createElement("div");
-        chartDiv.id = `chart-${cell.id}`;
+        chartDiv.id = `chartDiv-${cell.id}`;
         cell.appendChild(chartDiv);
-        this.createChart(chartDiv);
+        this.createChart(chartDiv, cellData);
         break;
       case "youtube":
         // Create the iframe element
@@ -324,19 +324,33 @@ class JTabula {
    * Creates a chart within a specified div element.
    * @param {HTMLElement} div - The div element to contain the chart.
    */
-  createChart(div) {
+  createChart(div, cellData) {
     // Create a new chart
     if (window.ApexCharts) {
+      // Default parameters
+      const chartType = cellData.chartType ? cellData.chartType : "bar";
+      const chartZoom = cellData.chartZoom ? cellData.chartZoom : false;
+      const chartTitle = cellData.chartTitle ? cellData.chartTitle : "";
+      const chartTitleAlign = cellData.chartTitleAlign ? cellData.chartTitleAlign : "center";
+      const chartId = div.id.replace('chartDiv', 'chart');
+      console.log(chartId);
       let myChart = new ApexCharts(div, {
         chart: {
-          type: 'bar',
+          id: chartId,
+          type: chartType,
+          zoom: {
+            enabled: chartZoom
+          }
         },
-        series: [{
-          data: [18, 28, 47, 57, 77, 87, 97, 107, 117, 127, 137, 10, 17, 27, 77, 87, 127]
-        }],
+        series: cellData.series,
         yaxis: {
           opposite: true,
-        }
+        },
+        title: {
+          text: chartTitle,
+          align: chartTitleAlign
+        },
+
       })
       myChart.render();
     }
