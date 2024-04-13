@@ -59,7 +59,28 @@ class JTabula {
       headerCell.classList.add("jt-header-cell");
       headerCell.textContent = headerText;
 
-      if (index > 0) {
+      if (index === 0) {
+        // Create button for sorting
+        const sortButton = document.createElement("button");
+        sortButton.classList.add("jt-header-button", "btn-icon", "btn-sort");
+        sortButton.textContent = '▼'; // up: ▲
+        sortButton.addEventListener("click", () => {
+          this.sortRows(headerCell.cellIndex);
+        });
+        const buttonContainer = document.createElement("div");
+        buttonContainer.style.float = "right"; // Float the container to the right
+        buttonContainer.appendChild(sortButton);
+        headerCell.appendChild(buttonContainer);
+      }
+      else if (index > 0) {
+        // Create button for sorting
+        const sortButton = document.createElement("button");
+        sortButton.classList.add("jt-header-button", "btn-icon", "btn-sort");
+        sortButton.textContent = '▼'; // up: ▲
+        sortButton.addEventListener("click", () => {
+          this.sortRows(headerCell.cellIndex);
+        });
+
         // Create buttons for increasing and decreasing column width
         const increaseButton = document.createElement("button");
         increaseButton.classList.add("jt-header-button", "btn-icon");
@@ -77,6 +98,7 @@ class JTabula {
         // Container for buttons with right alignment
         const buttonContainer = document.createElement("div");
         buttonContainer.style.float = "right"; // Float the container to the right
+        buttonContainer.appendChild(sortButton);
         buttonContainer.appendChild(decreaseButton);
         buttonContainer.appendChild(increaseButton);
         headerCell.appendChild(buttonContainer);
@@ -86,6 +108,105 @@ class JTabula {
 
   }
 
+  /**
+   * Sort rows using a column.
+   * @param {number} columnIndex - Index of the column.
+   */
+  sortRows(columnIndex) {
+    console.log("Sorting rows by column:", columnIndex);
+    const table = document.getElementById(this.tableID);
+    const rows = table.rows;
+
+    // Get column content
+    const columnContent = [];
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const cellIndex = columnIndex; // Calculate cell index based on column index and row number
+      const cell = row.cells[cellIndex];
+      if (cell) {
+        if (cell.textContent) {
+          // for text cells (No column for instance)
+          columnContent.push(cell.textContent);
+        }
+        else {
+          const input = cell.querySelector(".jt-input-ss");
+          //console.log("Cell content:", input.value);
+          columnContent.push(input.value);
+        }
+      }
+    }
+
+    const headerCell = rows[0].cells[columnIndex];
+    const sortButton = headerCell.querySelector(".btn-sort");
+    const sortDirection = sortButton.textContent === '▼' ? 'desc' : 'asc';
+    const { sortedArray, sortedIndices } = this.sortWithIndices(columnContent, sortDirection);
+    console.log(sortedArray);
+    console.log(sortedIndices);
+
+    // Update the table rows
+    this.updateRows(sortedIndices);
+
+    // Change button icon
+    sortButton.textContent = sortButton.textContent === '▼' ? '▲' : '▼';
+
+  }
+
+  /**
+   * Sort column values and return also the indices. Used by sortRows.
+   * @param {Array} toSort - Column values.
+   * @param {string} sortDirection - Sort direction (asc or desc).  
+   */
+  sortWithIndices(toSort, sortDirection) {
+    // Create an array of indices [0, 1, 2, ..., n]
+    const indices = Array.from(toSort.keys());
+
+    // Sort the indices based on the values in the toSort array
+    indices.sort((a, b) => {
+      const valueA = isNaN(parseFloat(toSort[a])) ? toSort[a] : parseFloat(toSort[a]);
+      const valueB = isNaN(parseFloat(toSort[b])) ? toSort[b] : parseFloat(toSort[b]);
+      if (sortDirection === 'asc')
+        return valueA < valueB ? -1 : (valueA > valueB ? 1 : 0);
+      else
+        return valueA < valueB ? 1 : (valueA > valueB ? -1 : 0);
+    });
+
+    // Return the sorted array and sorted indices as an object
+    return {
+      sortedArray: indices.map(index => toSort[index]),
+      sortedIndices: indices
+    };
+  }
+
+  /**
+   * Update rows of the table by reordering rows according to the sorted indices. Used by sortRows.
+   * @param {Array<number>} sortedIndices - Row indices.
+   */
+  updateRows(sortedIndices) {
+    const table = document.getElementById(this.tableID);
+    const rows = table.rows;
+
+    // 1. Store rows in sorted fashion: skip header row
+    let sortedRows = sortedIndices.map(index => rows[index + 1]);
+
+    // 2. Clear the data rows
+    while (table.rows.length > 1) {
+      table.deleteRow(1); // Delete all rows from the table
+    }
+
+    // 3. Add back the sorted rows to the DOM
+    const tbody = table.querySelector('tbody');
+    sortedRows.forEach(row => {
+      tbody.appendChild(row);
+    });
+
+  }
+
+
+  /**
+   * Adjust column withs by increase or decrease via buttons.
+   * @param {number} columnIndex - Index of the column.
+   * @param {number} delta - Adjustment value.
+   */
   adjustColumnWidth(columnIndex, delta) {
     const table = document.getElementById(this.tableID);
     const rows = table.rows;
@@ -133,7 +254,7 @@ class JTabula {
    * @param {string} [cell.hAlign] - The horizontal alignment of the cell content.
    * @param {string} [cell.vAlign] - The vertical alignment of the cell content.
    */
-  appendCell(cell) {
+  appendCell(cellData) {
     const table = document.getElementById(this.tableID);
     const rows = table.rows;
     const lastRowIndex = rows.length - 1;
@@ -144,12 +265,12 @@ class JTabula {
     const cellIndex = lastRow.cells.length;
     const newCell = lastRow.insertCell(cellIndex);
     newCell.id = `cell-${rows.length - 1}-${cellIndex}`;
-    newCell.style.textAlign = cell.hAlign ? cell.hAlign : "center";
-    newCell.style.verticalAlign = cell.vAlign ? cell.vAlign : "middle";
+    newCell.style.textAlign = cellData.hAlign ? cellData.hAlign : "center";
+    newCell.style.verticalAlign = cellData.vAlign ? cellData.vAlign : "middle";
     newCell.classList.add("jt-cell");
 
     // fill in data
-    this.populateCell(newCell, cell);
+    this.populateCell(newCell, cellData);
 
   }
 
@@ -206,6 +327,33 @@ class JTabula {
         });
         cell.appendChild(select);
         break;
+      case "multiselect":
+        const el = document.createElement("select");
+        el.classList.add("form-select", "jt-multiselect");
+        el.multiple = true;
+        cellData.data.forEach(option => {
+          const optionElem = document.createElement("option");
+          optionElem.value = option;
+          optionElem.textContent = option;
+          el.appendChild(optionElem);
+        });
+        el.addEventListener("change", () => {
+          // Write cell ID and selected option to console
+          const frameworksArray = Array.from(el.selectedOptions).map((option) => option.value);
+          console.log(`Cell ID: ${cell.id}, Selected Option: ${frameworksArray}`);
+        });
+        cell.appendChild(el);
+        // Create tomselect after element is added to document
+        let settings = {// Set the dropdownParent to null to allow the dropdown to extend beyond the container cell
+          dropdownParent: null
+        };
+        if (window.TomSelect) {
+          const tomSelectInstance = new TomSelect(el, settings);
+          tomSelectInstance.control.setAttribute("style", "border: 0px !important; background-color: var(--tblr-body-bg);");
+          // Let the dropdown pass cell borders
+          cell.setAttribute("style", "overflow: visible !important;");
+        }
+        break;
       case "radio":
         this.createRadios(cell, cellData);
         break;
@@ -250,6 +398,10 @@ class JTabula {
     }
   }
 
+  /**
+   * Add keystroke handlers to the input element for spreadsheet functionality.
+   * @param {HTMLInputElement} input - The input element to add keystroke handlers to.
+   */
   addKeystrokeHandlers(inputElement) {
     inputElement.addEventListener('keydown', (event) => {
       const key = event.key;
@@ -356,6 +508,11 @@ class JTabula {
     }
   }
 
+  /**
+   * Creates a radio button within a specified cell.
+   * @param {HTMLElement} cell - The cell element to contain the radio button.
+   * @param {Object} cellData - The data for the radio button.
+   */
   createRadios(cell, cellData) {
     cell.style.textAlign = "left";
     const radioGroup = document.createElement("div");
@@ -377,6 +534,11 @@ class JTabula {
     });
   }
 
+  /**
+   * Creates a checkbox within a specified cell.
+   * @param {HTMLElement} cell - The cell element to contain the checkbox.
+   * @param {Object} cellData - The data for the checkbox.
+   */
   createCheckbox(cell, cellData) {
     cell.style.textAlign = "left";
     const checkGroup = document.createElement("div");
@@ -396,45 +558,6 @@ class JTabula {
       checkGroup.appendChild(label);
       cell.appendChild(checkGroup);
     });
-  }
-
-  createWeatherChart() {
-    // Define WebSocket endpoint for weather data
-    const weatherWebSocketEndpoint = 'wss://example.com/weather';
-
-    // Create WebSocket connection
-    const socket = new WebSocket(weatherWebSocketEndpoint);
-
-    // Array to store weather data
-    let weatherDataArray = [];
-
-    // Event listener for WebSocket connection established
-    socket.addEventListener('open', function(event) {
-      console.log('Connected to weather data WebSocket');
-    });
-
-    // Event listener for incoming messages
-    socket.addEventListener('message', function(event) {
-      // Parse incoming JSON data
-      const newData = JSON.parse(event.data);
-
-      // Add new weather data to array
-      weatherDataArray.push(newData);
-
-      // Log the latest weather data
-      console.log('New weather data:', newData);
-    });
-
-    // Event listener for WebSocket connection closed
-    socket.addEventListener('close', function(event) {
-      console.log('Disconnected from weather data WebSocket');
-    });
-
-    // Event listener for WebSocket errors
-    socket.addEventListener('error', function(event) {
-      console.error('WebSocket error:', event);
-    });
-
   }
 
 }

@@ -8,8 +8,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
 
   <style>
     @import url("https://rsms.me/inter/inter.css");
@@ -39,11 +41,14 @@
 
   <br />
 
+  <div id='ZZZ'></div>
+
   <div class="container-xl">
     <div class="row row-cards">
       <h1>Other Examples</h1>
       <ul>
         <li><a href="ss.html">Spread Sheet Example</a></li>
+        <li><a href="ss-ms.html">Spread Sheet with Multiselect Example</a></li>
         <li><a href="cd.html"">Chart Dashboard Example</a></li>
       </ul>
     </div>
@@ -76,6 +81,7 @@
                   {type: "input", data: "Input Cell", disabled: true},
                   {type: "input", data: "Input"},
                   {type: "select", data: ["Option 1", "Option 2", "Option 3"], hAlign: "right"},
+                  {type: "multiselect", data: ["Option 1", "Option 2", "Option 3", "Option 4"], hAlign: "right"},
                   {type: "html", data: '<a href="#" class="btn btn-ghost-primary active w-100">Button</a>'},
                 ];
 

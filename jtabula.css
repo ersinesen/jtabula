@@ -10,6 +10,7 @@
   width: var(--cell-width) !important;
   height: var(--cell-height) !important;
   overflow: hidden !important;
+  background-color: var(--tblr-body-bg);
 }
 
 /* Style for the select element */
@@ -65,4 +66,11 @@
 /* Input box */
 .jt-input-ss {
   border: 0px !important;
+}
+
+/* Multiple select */
+.jt-multiselect {
+  border: 0px !important;
+  background-color: var(--tblr-body-bg);
+  overflow: visible !important;
 }
