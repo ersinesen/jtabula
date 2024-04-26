@@ -54,42 +54,55 @@ class JTabula {
     const thead = table.createTHead();
     const headerRow = thead.insertRow();
     //headerRow.classList.add("sticky-top");
-    this.columnsPerRow = headers.length;
     headers.forEach((headerText, index) => {
       const headerCell = document.createElement("th");
       headerCell.classList.add("jt-header-cell");
+      headerCell.textContent = headerText;
 
-      const textarea = document.createElement("textarea");
-      textarea.classList.add("jt-header-textarea");
-      textarea.value = headerText;
-      textarea.setAttribute("disabled", "true");
-      // Add event listeners for keystrokes
-      this.addKeystrokeHandlers(textarea);
-      
-      //headerCell.textContent = headerText;
+      if (index === 0) {
+        // Create button for sorting
+        const sortButton = document.createElement("button");
+        sortButton.classList.add("jt-header-button", "btn-icon", "btn-sort");
+        sortButton.textContent = '▼'; // up: ▲
+        sortButton.addEventListener("click", () => {
+          this.sortRows(headerCell.cellIndex);
+        });
+        const buttonContainer = document.createElement("div");
+        buttonContainer.style.float = "right"; // Float the container to the right
+        buttonContainer.appendChild(sortButton);
+        headerCell.appendChild(buttonContainer);
+      }
+      else if (index > 0) {
+        // Create button for sorting
+        const sortButton = document.createElement("button");
+        sortButton.classList.add("jt-header-button", "btn-icon", "btn-sort");
+        sortButton.textContent = '▼'; // up: ▲
+        sortButton.addEventListener("click", () => {
+          this.sortRows(headerCell.cellIndex);
+        });
 
-      // Create button for sorting
-      const sortButton = document.createElement("button");
-      sortButton.classList.add("jt-header-button", "btn-icon", "btn-sort");
-      sortButton.textContent = '▼'; // up: ▲
-      sortButton.addEventListener("click", () => {
-        this.sortRows(headerCell.cellIndex);
-      });
+        // Create buttons for increasing and decreasing column width
+        const increaseButton = document.createElement("button");
+        increaseButton.classList.add("jt-header-button", "btn-icon");
+        increaseButton.textContent = '+';
+        increaseButton.addEventListener("click", () => {
+          this.adjustColumnWidth(headerCell.cellIndex, 10);
+        });
 
-      // Container for buttons with right alignment
-      const buttonContainer = document.createElement("div");
-      buttonContainer.style.position = "relative"; // Set position to absolute
-      buttonContainer.style.top = "100%"; // Position at the top of the cell
-      buttonContainer.style.left = "100%"; // Float the container to the right
-      buttonContainer.style.transform = "translate(-20px, -0px)"; 
-      //buttonContainer.style.float = "right"; // Float the container to the right
-      buttonContainer.appendChild(sortButton);
-      const br = document.createElement("br");
-      //headerCell.appendChild(br);
-      headerCell.appendChild(buttonContainer);
-      
-      headerCell.appendChild(textarea);
+        const decreaseButton = document.createElement("button");
+        decreaseButton.textContent = '-';
+        decreaseButton.addEventListener("click", () => {
+          this.adjustColumnWidth(headerCell.cellIndex, -10);
+        });
 
+        // Container for buttons with right alignment
+        const buttonContainer = document.createElement("div");
+        buttonContainer.style.float = "right"; // Float the container to the right
+        buttonContainer.appendChild(sortButton);
+        buttonContainer.appendChild(decreaseButton);
+        buttonContainer.appendChild(increaseButton);
+        headerCell.appendChild(buttonContainer);
+      }
       headerRow.appendChild(headerCell);
     });
 
@@ -116,12 +129,9 @@ class JTabula {
           columnContent.push(cell.textContent);
         }
         else {
-          //const input = cell.querySelector(".jt-input-ss");
+          const input = cell.querySelector(".jt-input-ss");
           //console.log("Cell content:", input.value);
-          //columnContent.push(input.value);
-          const input = cell.querySelector(".jt-input-ss"); 
-          const textarea = cell.querySelector(".jt-textarea");
-          columnContent.push((input && input.value) || (textarea && textarea.value) || "");
+          columnContent.push(input.value);
         }
       }
     }
@@ -193,28 +203,34 @@ class JTabula {
 
 
   /**
-   * Set column visibility
+   * Adjust column withs by increase or decrease via buttons.
    * @param {number} columnIndex - Index of the column.
-   * @param {boolean} visible - True to make it visible, False to make it invisible.
+   * @param {number} delta - Adjustment value.
    */
-  setColumnVisibility(columnIndex, visible) {
-    console.log(`setColumnVisibility for column: ${columnIndex}`);
+  adjustColumnWidth(columnIndex, delta) {
     const table = document.getElementById(this.tableID);
     const rows = table.rows;
+    const cellsPerRow = this.columnsPerRow;
 
-    // Adjust header cell visibility
+    // Adjust width of header cell
     const headerCell = table.rows[0].cells[columnIndex];
-    headerCell.style.display = visible ? "" : "none"; // Show or hide header cell
+    const currentHeaderWidth = parseInt(headerCell.style.width) || headerCell.offsetWidth;
+    const newHeaderWidth = Math.max(currentHeaderWidth + delta, 0);
+    headerCell.style.width = newHeaderWidth + "px";
 
-    // Adjust all cells in the same column in the body of the table
-    for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const cell = row.cells[columnIndex];
-        if (cell) {
-            cell.style.display = visible ? "" : "none"; // Show or hide cell
-        }
+    // Adjust width of cells in the same column in the body of the table
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const cellIndex = columnIndex + (i - 1) * cellsPerRow; // Calculate cell index based on column index and row number
+      const cell = row.cells[cellIndex];
+      if (cell) {
+        const currentCellWidth = parseInt(cell.style.width) || cell.offsetWidth;
+        const newCellWidth = Math.max(currentCellWidth + delta, 0);
+        cell.style.width = newCellWidth + "px";
+      }
     }
   }
+
 
   /**
    * Sets custom dimensions for the cells.
@@ -256,8 +272,6 @@ class JTabula {
     // fill in data
     this.populateCell(newCell, cellData);
 
-    return newCell.id;
-
   }
 
   /**
@@ -284,9 +298,7 @@ class JTabula {
         input.classList.add("jt-input");
         input.type = "text";
         input.value = cellData.data;
-        if (cellData.disabled) {
-          input_ss.setAttribute("disabled", "disabled");
-        }
+        input.disabled = cellData.disabled || false;
         cell.appendChild(input);
         break;
       case "input-ss":
@@ -294,30 +306,16 @@ class JTabula {
         input_ss.classList.add("jt-input-ss");
         input_ss.type = "text";
         input_ss.value = cellData.data;
-        if (cellData.disabled) {
-          input_ss.setAttribute("disabled", "disabled");
-        }
+        input_ss.disabled = cellData.disabled || false;
         // Add event listeners for keystrokes
         this.addKeystrokeHandlers(input_ss);
         cell.appendChild(input_ss);
         break;
-      case "textarea":
-          const textarea = document.createElement("textarea");
-          textarea.classList.add("jt-textarea");
-          textarea.value = cellData.data;
-          if (cellData.disabled) {
-            textarea.setAttribute("disabled", "disabled");
-          }
-          // Add event listeners for keystrokes
-          this.addKeystrokeHandlers(textarea);
-          cell.appendChild(textarea);
-          break;
       case "select":
         const select = document.createElement("select");
-        select.classList.add("form-select", "jt-select");
+        select.classList.add("jt-select");
         cellData.data.forEach(option => {
           const optionElem = document.createElement("option");
-          //optionElem.classList.add("jt-multiselect-option");
           optionElem.value = option;
           optionElem.textContent = option;
           select.appendChild(optionElem);
@@ -327,29 +325,34 @@ class JTabula {
           // Write cell ID and selected option to console
           console.log(`Cell ID: ${cell.id}, Selected Option: ${select.value}`);
         });
-        cell.style.verticalAlign = "text-top";
         cell.appendChild(select);
         break;
       case "multiselect":
-        const div = document.createElement("div");
-        div.id = cell.id.replace("cell","multiselect");
-        const options = cellData.data.map( (value,index) => ({
-          label: value,
-          value: index,
-        }));
-        //console.log(options);
-        cell.style.verticalAlign = "text-top";
-        cell.appendChild(div);
-
-        VirtualSelect.init({
-          ele: `#${div.id}`,
-          options: options,
-          multiple: true,
-          showSelectedOptionsFirst: true,
-          popupDropboxBreakpoint: '3000px',
-          hideClearButton: true,
+        const el = document.createElement("select");
+        el.classList.add("form-select", "jt-multiselect");
+        el.multiple = true;
+        cellData.data.forEach(option => {
+          const optionElem = document.createElement("option");
+          optionElem.value = option;
+          optionElem.textContent = option;
+          el.appendChild(optionElem);
         });
-
+        el.addEventListener("change", () => {
+          // Write cell ID and selected option to console
+          const frameworksArray = Array.from(el.selectedOptions).map((option) => option.value);
+          console.log(`Cell ID: ${cell.id}, Selected Option: ${frameworksArray}`);
+        });
+        cell.appendChild(el);
+        // Create tomselect after element is added to document
+        let settings = {// Set the dropdownParent to null to allow the dropdown to extend beyond the container cell
+          dropdownParent: null
+        };
+        if (window.TomSelect) {
+          const tomSelectInstance = new TomSelect(el, settings);
+          tomSelectInstance.control.setAttribute("style", "border: 0px !important; background-color: var(--tblr-body-bg);");
+          // Let the dropdown pass cell borders
+          cell.setAttribute("style", "overflow: visible !important;");
+        }
         break;
       case "radio":
         this.createRadios(cell, cellData);
@@ -554,12 +557,6 @@ class JTabula {
       label.appendChild(span);
       checkGroup.appendChild(label);
       cell.appendChild(checkGroup);
-      // For resizing
-      const ta = document.createElement("textarea");
-      ta.classList.add("jt-textarea");
-      ta.value = "";
-      ta.setAttribute("disabled", "true");
-      cell.appendChild(ta);
     });
   }
 

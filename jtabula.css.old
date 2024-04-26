@@ -1,0 +1,76 @@
+.table {
+  border: 1px solid #666;
+  table-layout: fixed;
+}
+
+
+/* Style for cell */
+.jt-cell {
+  border: 1px solid #666 !important;
+  width: var(--cell-width) !important;
+  height: var(--cell-height) !important;
+  overflow: hidden !important;
+  background-color: var(--tblr-body-bg);
+}
+
+/* Style for the select element */
+.jt-select {
+  margin: 0;
+  padding: 0;
+  background: none;
+  font-size: small;
+  color: inherit;
+  font-family: inherit;
+  box-sizing: border-box;
+  border: 1px solid #aaa !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 200px;
+  min-width: 100px;
+}
+
+/* Input box */
+.jt-input {
+  max-width: var(--cell-width);
+  min-width: 100px;
+}
+
+/* iframe box */
+.jt-iframe {
+  max-width: var(--cell-width);
+  min-width: 100px;
+  max-height: var(--cell-height);
+  min-height: 100px;
+}
+
+/* video */
+.jt-video {
+  /* override other styles to make responsive */
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* thead */
+.jt-header-cell {
+  background: #ddd;
+  border: 1px solid #666 !important;
+  overflow: hidden !important;
+}
+
+/* header button */
+.jt-header-button {
+  width: 20px !important;
+}
+
+/* Input box */
+.jt-input-ss {
+  border: 0px !important;
+}
+
+/* Multiple select */
+.jt-multiselect {
+  border: 0px !important;
+  background-color: var(--tblr-body-bg);
+  overflow: visible !important;
+}

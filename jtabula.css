@@ -1,39 +1,148 @@
 .table {
-  border: 1px solid #666;
-  table-layout: fixed;
+  border: 1px solid #333;
+}
+
+/* thead */
+.jt-header-cell {
+  background: #ddd;
+  border: 1px solid #333 !important;
+  overflow: hidden !important;
+  white-space: normal;
+  /*width: var(--cell-width) !important;
+  height: var(--cell-height) !important;*/
+  min-width: 60px;
+  max-width: 500px;
+  text-overflow: ellipsis;
+  font-size: 0.75rem;
+  font-weight: var(--tblr-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  line-height: 0.8rem;
+  color: var(--tblr-muted);
+  /*padding-top: .5rem;
+  padding-bottom: .5rem;*/
+}
+
+/* Style for header textarea */
+.jt-header-cell .jt-header-textarea {
+  border: 0px !important;
+  background-color: #ddd;
+  height: 100%; /*var(--cell-height) !important; /* Inherit height from --cell-height */
+  width: 100%; /*var(--cell-width) !important; /* Inherit width from --cell-width */
+  min-width: 80px; /* Minimum width for the input box */
+  max-width: 500px; /* Maximum width for the input box */
+  min-height: 40px;
+  /* line-height: 60px; /* Set line-height to match container's full height */
+  box-sizing: border-box; /* Ensure padding and border are included in the width and height */
+  resize: both; /* Allow resizing of the input box */
+  overflow: auto; /* Allow content to overflow with a scrollbar when needed */
+  padding-top: 0px;
+  padding-bottom: 0px;
+  white-space: normal; /* Allow text to wrap within the box */
+  font-size: 0.75rem;
+  color: #222;
+}
+
+/* header button */
+.jt-header-button {
+  width: 20px !important;
+  font-size: small;
 }
 
 
 /* Style for cell */
 .jt-cell {
-  border: 1px solid #666 !important;
+  border: 1px solid #333 !important;
   width: var(--cell-width) !important;
   height: var(--cell-height) !important;
+  min-width: 60px;
+  max-width: 500px;
   overflow: hidden !important;
   background-color: var(--tblr-body-bg);
 }
 
-/* Style for the select element */
-.jt-select {
-  margin: 0;
-  padding: 0;
-  background: none;
-  font-size: small;
-  color: inherit;
-  font-family: inherit;
-  box-sizing: border-box;
-  border: 1px solid #aaa !important;
-  overflow: visible !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  max-width: 200px;
-  min-width: 100px;
-}
 
 /* Input box */
 .jt-input {
   max-width: var(--cell-width);
+  min-width: 60px;
+  background-color: var(--tblr-body-bg);
+}
+
+/* Input box for spreadsheet */
+.jt-input-ss {
+  border: 0px !important;
+  background-color: var(--tblr-body-bg);
+  height: 100%; /*var(--cell-height) !important; /* Inherit height from --cell-height */
+  width: 100%; /*var(--cell-width) !important; /* Inherit width from --cell-width */
+  min-width: 60px; /* Minimum width for the input box */
+  max-width: 500px; /* Maximum width for the input box */
+  /* line-height: 60px; /* Set line-height to match container's full height */
+  box-sizing: border-box; /* Ensure padding and border are included in the width and height */
+  resize: both; /* Allow resizing of the input box */
+  overflow: auto; /* Allow content to overflow with a scrollbar when needed */
+  padding-top: 0px;
+  padding-bottom: 0px;
+  white-space: normal; /* Allow text to wrap within the box */
+}
+
+/* multiline textarea */
+.jt-textarea {
+  border: 0px !important;
+  background-color: var(--tblr-body-bg);
+  height: 100%; /*var(--cell-height) !important; /* Inherit height from --cell-height */
+  width: 100%; /*var(--cell-width) !important; /* Inherit width from --cell-width */
+  min-width: 100px; /* Minimum width for the input box */
+  max-width: 500px; /* Maximum width for the input box */
+  /* line-height: 60px; /* Set line-height to match container's full height */
+  box-sizing: border-box; /* Ensure padding and border are included in the width and height */
+  resize: both; /* Allow resizing of the input box */
+  overflow: auto; /* Allow content to overflow with a scrollbar when needed */
+  padding-top: 0px;
+  padding-bottom: 0px;
+  white-space: normal; /* Allow text to wrap within the box */
+  font-size: 0.75rem;
+}
+
+
+/* Style for the select element */
+.jt-select {
+  border: 0px !important;
+  background-color: var(--tblr-body-bg);
+  overflow: visible !important;
+  max-height: 100px; /* Adjust the height as needed */
   min-width: 100px;
+  overflow-x: auto; /* Use scrollbars when content overflows */
+  font-size: 0.75rem;
+}
+
+/* option in the select */
+.jt-select-option {
+  white-space: nowrap !important;
+}
+
+/* Multiple select */
+.jt-multiselect {
+  border: 0px !important;
+  background-color: var(--tblr-body-bg);
+  /*overflow: visible !important;*/
+  max-height: 120px; /* Adjust the height as needed */
+  min-width: 100px;
+  overflow-x: auto; /* Use scrollbars when content overflows */
+  text-overflow: ellipsis;
+
+}
+
+/* Prevent text wrapping in options */
+.jt-multiselect option {
+  white-space: nowrap !important;
+}
+
+/* Custom form-selectgroup-input:checked */
+.form-selectgroup-input:checked + .form-selectgroup-label {
+  border-color: #adb5bd !important;
+  background-color: #76787a !important;
+  color: #212529 !important;
 }
 
 /* iframe box */
@@ -49,28 +158,4 @@
   /* override other styles to make responsive */
   width: 100% !important;
   height: auto !important;
-}
-
-/* thead */
-.jt-header-cell {
-  background: #ddd;
-  border: 1px solid #666 !important;
-  overflow: hidden !important;
-}
-
-/* header button */
-.jt-header-button {
-  width: 20px !important;
-}
-
-/* Input box */
-.jt-input-ss {
-  border: 0px !important;
-}
-
-/* Multiple select */
-.jt-multiselect {
-  border: 0px !important;
-  background-color: var(--tblr-body-bg);
-  overflow: visible !important;
 }
