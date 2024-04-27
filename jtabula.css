@@ -27,18 +27,26 @@
 .jt-header-cell .jt-header-textarea {
   border: 0px !important;
   background-color: #ddd;
-  height: 100%; /*var(--cell-height) !important; /* Inherit height from --cell-height */
-  width: 100%; /*var(--cell-width) !important; /* Inherit width from --cell-width */
-  min-width: 80px; /* Minimum width for the input box */
-  max-width: 500px; /* Maximum width for the input box */
+  height: 100%;
+  /*var(--cell-height) !important; /* Inherit height from --cell-height */
+  width: 100%;
+  /*var(--cell-width) !important; /* Inherit width from --cell-width */
+  min-width: 80px;
+  /* Minimum width for the input box */
+  max-width: 500px;
+  /* Maximum width for the input box */
   min-height: 40px;
   /* line-height: 60px; /* Set line-height to match container's full height */
-  box-sizing: border-box; /* Ensure padding and border are included in the width and height */
-  resize: both; /* Allow resizing of the input box */
-  overflow: auto; /* Allow content to overflow with a scrollbar when needed */
+  box-sizing: border-box;
+  /* Ensure padding and border are included in the width and height */
+  resize: both;
+  /* Allow resizing of the input box */
+  overflow: auto;
+  /* Allow content to overflow with a scrollbar when needed */
   padding-top: 0px;
   padding-bottom: 0px;
-  white-space: normal; /* Allow text to wrap within the box */
+  white-space: normal;
+  /* Allow text to wrap within the box */
   font-size: 0.75rem;
   color: #222;
 }
@@ -61,6 +69,11 @@
   background-color: var(--tblr-body-bg);
 }
 
+/* Style for selected cell */
+.selected-cell {
+  border-color: red !important;
+  border-width: 2px !important;
+}
 
 /* Input box */
 .jt-input {
@@ -73,34 +86,50 @@
 .jt-input-ss {
   border: 0px !important;
   background-color: var(--tblr-body-bg);
-  height: 100%; /*var(--cell-height) !important; /* Inherit height from --cell-height */
-  width: 100%; /*var(--cell-width) !important; /* Inherit width from --cell-width */
-  min-width: 60px; /* Minimum width for the input box */
-  max-width: 500px; /* Maximum width for the input box */
+  height: 100%;
+  /*var(--cell-height) !important; /* Inherit height from --cell-height */
+  width: 100%;
+  /*var(--cell-width) !important; /* Inherit width from --cell-width */
+  min-width: 60px;
+  /* Minimum width for the input box */
+  max-width: 500px;
+  /* Maximum width for the input box */
   /* line-height: 60px; /* Set line-height to match container's full height */
-  box-sizing: border-box; /* Ensure padding and border are included in the width and height */
-  resize: both; /* Allow resizing of the input box */
-  overflow: auto; /* Allow content to overflow with a scrollbar when needed */
+  box-sizing: border-box;
+  /* Ensure padding and border are included in the width and height */
+  resize: both;
+  /* Allow resizing of the input box */
+  overflow: auto;
+  /* Allow content to overflow with a scrollbar when needed */
   padding-top: 0px;
   padding-bottom: 0px;
-  white-space: normal; /* Allow text to wrap within the box */
+  white-space: normal;
+  /* Allow text to wrap within the box */
 }
 
 /* multiline textarea */
 .jt-textarea {
   border: 0px !important;
   background-color: var(--tblr-body-bg);
-  height: 100%; /*var(--cell-height) !important; /* Inherit height from --cell-height */
-  width: 100%; /*var(--cell-width) !important; /* Inherit width from --cell-width */
-  min-width: 100px; /* Minimum width for the input box */
-  max-width: 500px; /* Maximum width for the input box */
+  height: 100%;
+  /*var(--cell-height) !important; /* Inherit height from --cell-height */
+  width: 100%;
+  /*var(--cell-width) !important; /* Inherit width from --cell-width */
+  min-width: 100px;
+  /* Minimum width for the input box */
+  max-width: 500px;
+  /* Maximum width for the input box */
   /* line-height: 60px; /* Set line-height to match container's full height */
-  box-sizing: border-box; /* Ensure padding and border are included in the width and height */
-  resize: both; /* Allow resizing of the input box */
-  overflow: auto; /* Allow content to overflow with a scrollbar when needed */
+  box-sizing: border-box;
+  /* Ensure padding and border are included in the width and height */
+  resize: both;
+  /* Allow resizing of the input box */
+  overflow: auto;
+  /* Allow content to overflow with a scrollbar when needed */
   padding-top: 0px;
   padding-bottom: 0px;
-  white-space: normal; /* Allow text to wrap within the box */
+  white-space: normal;
+  /* Allow text to wrap within the box */
   font-size: 0.75rem;
 }
 
@@ -110,9 +139,11 @@
   border: 0px !important;
   background-color: var(--tblr-body-bg);
   overflow: visible !important;
-  max-height: 100px; /* Adjust the height as needed */
+  max-height: 100px;
+  /* Adjust the height as needed */
   min-width: 100px;
-  overflow-x: auto; /* Use scrollbars when content overflows */
+  overflow-x: auto;
+  /* Use scrollbars when content overflows */
   font-size: 0.75rem;
 }
 
@@ -126,9 +157,11 @@
   border: 0px !important;
   background-color: var(--tblr-body-bg);
   /*overflow: visible !important;*/
-  max-height: 120px; /* Adjust the height as needed */
+  max-height: 120px;
+  /* Adjust the height as needed */
   min-width: 100px;
-  overflow-x: auto; /* Use scrollbars when content overflows */
+  overflow-x: auto;
+  /* Use scrollbars when content overflows */
   text-overflow: ellipsis;
 
 }
@@ -139,7 +172,7 @@
 }
 
 /* Custom form-selectgroup-input:checked */
-.form-selectgroup-input:checked + .form-selectgroup-label {
+.form-selectgroup-input:checked+.form-selectgroup-label {
   border-color: #adb5bd !important;
   background-color: #76787a !important;
   color: #212529 !important;
