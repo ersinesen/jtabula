@@ -453,6 +453,7 @@ class JTabula {
       case "multiselect":
         const div = document.createElement("div");
         div.id = cell.id.replace("cell", "multiselect");
+        div.classList.add("multiselect");
         const options = cellData.data.map((value, index) => ({
           label: value,
           value: index,
