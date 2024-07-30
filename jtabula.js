@@ -43,7 +43,127 @@ class JTabula {
     const tbody = document.createElement("tbody");
     table.appendChild(tbody);
     container.appendChild(table);
+
+    table.setAttribute('tabindex', '0'); // Allow table to receive focus
+
+    // Event listener for CTRL-Y shortcut within the context of the table
+    table.addEventListener('keydown', (event) => {
+      if (event.ctrlKey && event.key === 'y') {
+        console.log("Table receives CTRL-Y shortcut");
+        // Get the currently selected cell
+        const selectedCell = $(document.activeElement).closest('.jt-cell');
+        if (selectedCell.length) {
+          // Your action for CTRL-Y shortcut with the selected cell here
+          console.log('CTRL-Y shortcut pressed with selected cell:', selectedCell.attr('id'));
+          selectedCell.addClass('selected-cell');
+          const modalElement = this.createModal(selectedCell.attr('id'), `Selected cell: ${selectedCell.attr('id')}`, "lorem ipsum");
+          // Append modal to the body
+          document.body.appendChild(modalElement);
+          // Open the modal
+          $(modalElement).modal('show');
+        }
+      }
+    });
   }
+
+  createModal(cellId, title) {
+    // Create modal container
+    const modal = document.createElement('div');
+    modal.classList.add('modal', 'modal-blur', 'fade');
+    modal.id = 'modal-simple';
+    modal.tabIndex = '-1';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-hidden', 'true');
+
+    // Create modal dialog
+    const modalDialog = document.createElement('div');
+    modalDialog.classList.add('modal-dialog', 'modal-dialog-centered');
+    modalDialog.setAttribute('role', 'document');
+
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.classList.add('modal-content');
+
+    // Create modal header
+    const modalHeader = document.createElement('div');
+    modalHeader.classList.add('modal-header');
+
+    const modalTitle = document.createElement('h5');
+    modalTitle.classList.add('modal-title');
+    modalTitle.textContent = title;
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.classList.add('btn-close');
+    closeButton.setAttribute('data-bs-dismiss', 'modal');
+    closeButton.setAttribute('aria-label', 'Close');
+
+    modalHeader.appendChild(modalTitle);
+    modalHeader.appendChild(closeButton);
+
+    // Create modal body
+    const modalBody = document.createElement('div');
+    modalBody.classList.add('modal-body');
+
+    // Create textarea element
+    const textarea = document.createElement('textarea');
+    textarea.classList.add('form-control');
+    textarea.rows = '3'; // Adjust the number of rows as needed
+
+    // Set initial value of textarea
+    textarea.value = this.comments && this.comments[cellId] ? this.comments[cellId] : '';
+
+    modalBody.appendChild(textarea);
+
+    // Create modal footer
+    const modalFooter = document.createElement('div');
+    modalFooter.classList.add('modal-footer');
+
+    const closeButtonFooter = document.createElement('button');
+    closeButtonFooter.type = 'button';
+    closeButtonFooter.classList.add('btn', 'btn-danger');
+    closeButtonFooter.textContent = 'Sil';
+    closeButtonFooter.setAttribute('data-bs-dismiss', 'modal');
+
+    // Event listener for "Sil" button
+    closeButtonFooter.addEventListener('click', () => {
+      const selectedCell = document.getElementById(cellId);
+      if (selectedCell) {
+        selectedCell.classList.remove('selected-cell');
+        if (this.comments)
+          this.comments[cellId] = '';
+      }
+    });
+
+    const saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.classList.add('btn', 'btn-primary');
+    saveButton.textContent = 'Kaydet';
+    saveButton.setAttribute('data-bs-dismiss', 'modal');
+
+    // Event listener for "Kaydet" button
+    saveButton.addEventListener('click', () => {
+      const comments = this.comments || {}; // Ensure the comments dictionary exists
+      comments[cellId] = textarea.value; // Save the content of the textarea to the comments dictionary
+      this.comments = comments; // Update the comments dictionary in JTAbula class
+    });
+
+    modalFooter.appendChild(closeButtonFooter);
+    modalFooter.appendChild(saveButton);
+
+    // Append modal elements
+    modalContent.appendChild(modalHeader);
+    modalContent.appendChild(modalBody);
+    modalContent.appendChild(modalFooter);
+
+    modalDialog.appendChild(modalContent);
+
+    modal.appendChild(modalDialog);
+
+    // Return the modal element
+    return modal;
+  }
+
 
   /**
    * Appends a header row to the table.
@@ -65,7 +185,7 @@ class JTabula {
       textarea.setAttribute("disabled", "true");
       // Add event listeners for keystrokes
       this.addKeystrokeHandlers(textarea);
-      
+
       //headerCell.textContent = headerText;
 
       // Create button for sorting
@@ -81,13 +201,13 @@ class JTabula {
       buttonContainer.style.position = "relative"; // Set position to absolute
       buttonContainer.style.top = "100%"; // Position at the top of the cell
       buttonContainer.style.left = "100%"; // Float the container to the right
-      buttonContainer.style.transform = "translate(-20px, -0px)"; 
+      buttonContainer.style.transform = "translate(-20px, -0px)";
       //buttonContainer.style.float = "right"; // Float the container to the right
       buttonContainer.appendChild(sortButton);
       const br = document.createElement("br");
       //headerCell.appendChild(br);
       headerCell.appendChild(buttonContainer);
-      
+
       headerCell.appendChild(textarea);
 
       headerRow.appendChild(headerCell);
@@ -119,7 +239,7 @@ class JTabula {
           //const input = cell.querySelector(".jt-input-ss");
           //console.log("Cell content:", input.value);
           //columnContent.push(input.value);
-          const input = cell.querySelector(".jt-input-ss"); 
+          const input = cell.querySelector(".jt-input-ss");
           const textarea = cell.querySelector(".jt-textarea");
           columnContent.push((input && input.value) || (textarea && textarea.value) || "");
         }
@@ -208,11 +328,11 @@ class JTabula {
 
     // Adjust all cells in the same column in the body of the table
     for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const cell = row.cells[columnIndex];
-        if (cell) {
-            cell.style.display = visible ? "" : "none"; // Show or hide cell
-        }
+      const row = rows[i];
+      const cell = row.cells[columnIndex];
+      if (cell) {
+        cell.style.display = visible ? "" : "none"; // Show or hide cell
+      }
     }
   }
 
@@ -302,16 +422,16 @@ class JTabula {
         cell.appendChild(input_ss);
         break;
       case "textarea":
-          const textarea = document.createElement("textarea");
-          textarea.classList.add("jt-textarea");
-          textarea.value = cellData.data;
-          if (cellData.disabled) {
-            textarea.setAttribute("disabled", "disabled");
-          }
-          // Add event listeners for keystrokes
-          this.addKeystrokeHandlers(textarea);
-          cell.appendChild(textarea);
-          break;
+        const textarea = document.createElement("textarea");
+        textarea.classList.add("jt-textarea");
+        textarea.value = cellData.data;
+        if (cellData.disabled) {
+          textarea.setAttribute("disabled", "disabled");
+        }
+        // Add event listeners for keystrokes
+        this.addKeystrokeHandlers(textarea);
+        cell.appendChild(textarea);
+        break;
       case "select":
         const select = document.createElement("select");
         select.classList.add("form-select", "jt-select");
@@ -332,12 +452,13 @@ class JTabula {
         break;
       case "multiselect":
         const div = document.createElement("div");
-        div.id = cell.id.replace("cell","multiselect");
-        const options = cellData.data.map( (value,index) => ({
+        div.id = cell.id.replace("cell", "multiselect");
+        div.classList.add("multiselect");
+        const options = cellData.data.map((value, index) => ({
           label: value,
           value: index,
         }));
-        //console.log(options);
+        console.log(options);
         cell.style.verticalAlign = "text-top";
         cell.appendChild(div);
 
