@@ -32,11 +32,16 @@
     <div id="jtabula-container"></div>
   </div>
 
+  <div class="row row-cards">
+    <button onclick="addCell()">Add Cell</button>
+  </div>
 
   <script src="jtabula.js"></script>
   <script>
     // Create an object to store chart data
     let chartDataDict = {};
+
+    let table = null;
 
     function getRandomIntegers(N) {
       const randomIntegers = [];
@@ -62,12 +67,24 @@
       });
     }
 
+    function addCell() {
+      console.log("addCell");
+      const cell = {
+        type: "chart",
+        chartType: "line",
+        chartTitle: "Data",
+        series: [{
+          data: [1,2,3,4,3,2,1]
+        }]
+      };
+      table.appendCell(cell);
+    }
 
     // Create table
     document.addEventListener("DOMContentLoaded", function () {
       const containerId = "jtabula-container";
       const numCols = 4;
-      const table = new JTabula(containerId, numCols);
+      table = new JTabula(containerId, numCols);
       table.createTable();
 
       const numRows = 3;
